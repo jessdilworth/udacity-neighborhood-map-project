@@ -1,0 +1,40 @@
+@import "css/main";
+
+@import "css/normalize";
+
+// Bootstrap CSS
+@import "node_modules/bootstrap/dist/css/bootstrap";
+
+// Inverted Triangle CSS (ITCSS)
+// [SRC: http://www.creativebloq.com/web-design/manage-large-scale-web-projects-new-css-architecture-itcss-41...]
+
+
+@import "variables";
+
+// SETTINGS
+// Examples of global settings might be things like the base font size, colour palettes, config
+@import "settings";
+
+// TOOLS
+//The next layer houses your globally available tooling – namely mixins and functions.
+@import "tools";
+
+// GENERIC
+// This layer is seldom modified. It contains things like Normalize.css, global box-sizing rules, CSS resets and so on.
+@import "generic";
+
+// ELMENTS
+// The Base layer binds onto bare HTML element (or 'type') selectors only.
+@import "elements";
+
+// OBJECTS
+// This is the first layer in which we find class-based selectors. These are concerned with styling non-cosmetic design patterns, or 'objects'.
+@import "objects";
+
+// COMPONENTS
+// This layer styles explicit, designed pieces of the DOM. We shouldn't find any selectors with a lower specificity than one class in this layer.
+@import "components";
+
+// TRUMPS
+// This layer contains utility and helper classes, hacks and overrides. A lot of the declarations in this layer will carry !important
+@import "trumps";
