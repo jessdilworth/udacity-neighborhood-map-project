@@ -1,13 +1,4 @@
-
-// 	this.pointsOfInterest = ko.observableArray([
-// 		{title: 'Westow House Pub', location: {lat: 51.4200164, lng: -0.0809779}},
-// 		{title: 'Crystal Palace Antique and Modern', location: {lat:51.4200389, lng: -0.0816344}},
-// 		{title: 'Four Hundred Rabbits', location: {lat: 51.4189756, lng: -0.0850944}},
-// 		{title: 'The Secret Garden', location: {lat: 51.4172203, lng: -0.0847438}},
-// 		{title: 'Crystal Palace Station', location: {lat: 51.4181133, lng: -0.0747687}}
-// 		]);
-
-// }; 
+//Search functionality thanks to https://github.com/Zayah117/neighborhood-map-project/blob/master/index.html
 
 //MODEL
 
@@ -24,13 +15,19 @@ var localSpots = {
 
 //VIEWMODEL
 
+//Data for locations
+var Location = function(data) {
+	this.title = ko.observable(data.title);
+	this.lat = ko.observable(data.lat);
+	this.lng = ko.observable(data.lng);
+};
+
 var viewModel = function() {
 
 	var self = this;
 
 	//separating out the model video lesson: Cat constructor function
 	self.locations = ko.observableArray(localSpots.pointsOfInterest);
-
 
 	var infowindow = new google.maps.InfoWindow({
     	content: 'test content'
@@ -49,13 +46,33 @@ var viewModel = function() {
 
 		self.locations()[i].marker = marker;
 
+
+		//setting up infowindows to open on click
 		google.maps.event.addListener(marker, 'click', function () {
-		// where I have added .html to the marker object.
 		infowindow.setContent(this.title);
 		infowindow.open(map, this);
 		});
-	}
 
+		// This will store the search results in an observable array via this.filteredItems
+		self.items = ko.observableArray();
+
+		//This will track the user input to the search box
+		this.currentSearch = ko.observable('');
+
+		//Changes the location list based on the search input
+		this.locationList = ko.computed(function(locations){
+			var myList = []
+				self.locations().forEach(function(locationItem){
+				//If the location name includes text from the input, add it to the list
+				if (self.locations()[i].title.toLowerCase().includes(self.currentSearch().toLowerCase())) {
+					myList.push(new Location(locationItem));
+				}
+			});
+
+			return myList;
+
+		}, this);
+	}
 };
 
 
@@ -65,11 +82,12 @@ var viewModel = function() {
 function createMap() {
 
 	var myCPMapSpecs = {
-		zoom: 13,
+		zoom: 15,
 		center: new google.maps.LatLng(51.4200164, -0.0809779),
 	};
 	
 	map = new google.maps.Map(document.getElementById('map'), myCPMapSpecs);
 
 	ko.applyBindings(new viewModel());
+
 };

@@ -14,15 +14,16 @@
 
     </head>
     <body>
-
-        <!-- Add your site or application content here -->
-        <p>Hello world! This is HTML5 Boilerplate.</p>
         <div id="place-list"></div>
         <div id="map" style="width:500px;height:380px;"></div>
         
         <ul data-bind="foreach: locations">
             <li data-bind="text: title"></li>
-        </ul>
+        </ul>   
+
+        <div class="col-md-12 searchBar">
+            <input data-bind="textInput: currentSearch">
+        </div>   
 
         <script src="js/lib/jquery-1.12.0.min.js"></script>
         <script src="js/lib/knockout-3.4.0.js"></script>
