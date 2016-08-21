@@ -17,19 +17,13 @@
         <div id="place-list"></div>
         <div id="map" style="width:500px;height:380px;"></div>
         
-        <ul data-bind="foreach: locations">
+        <ul data-bind="foreach: filteredLocations">
             <li data-bind="text: title"></li>
         </ul>   
 
         <div>
-            <input data-bind="textInput: currentSearch">
+            <input data-bind="textInput: currentSearch" placeholder="filter local attractions">
         </div>  
-
-        <div id="wiki-article-list">
-            <ul data-bind="foreach: filteredLocations">
-                <li data-bind="text: title"></li>
-            </ul>
-        </div>
 
         <script src="js/lib/jquery-1.12.0.min.js"></script>
         <script src="js/lib/knockout-3.4.0.js"></script>
