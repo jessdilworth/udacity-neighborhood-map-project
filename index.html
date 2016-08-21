@@ -21,9 +21,15 @@
             <li data-bind="text: title"></li>
         </ul>   
 
-        <div class="col-md-12 searchBar">
+        <div>
             <input data-bind="textInput: currentSearch">
-        </div>   
+        </div>  
+
+        <div id="wiki-article-list">
+            <ul data-bind="foreach: articleList">
+                <li data-bind="text: url"></li>
+            </ul>
+        </div>
 
         <script src="js/lib/jquery-1.12.0.min.js"></script>
         <script src="js/lib/knockout-3.4.0.js"></script>

@@ -72,6 +72,24 @@ var viewModel = function() {
 			return myList;
 
 		}, this);
+
+
+		//Wiki AJAX request
+		var wikiUrl = 'http://en.wikipedia.org/w/api.php?action=opensearch&search=' + this.currentSearch + '&format=json&callback=wikiCallback';
+
+		$.ajax ({
+			url: wikiUrl,
+			dataType: "jsonp",
+			//jsonp: "callback",
+			success: function(response) {
+				var articleList = response[1];
+
+				for (var i=0; i < articleList.length; i++) {
+					articleStr = articleList[i];
+					var url = 'http://en.wikipedia.org/wiki/' + articleStr;
+				};
+			}
+		})
 	}
 };
 
