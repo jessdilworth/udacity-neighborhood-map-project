@@ -53,6 +53,8 @@ var viewModel = function() {
 		infowindow.open(map, this);
 		});
 
+	}
+
 		// This will store the search results in an observable array via this.filteredItems
 		self.items = ko.observableArray();
 
@@ -60,37 +62,41 @@ var viewModel = function() {
 		this.currentSearch = ko.observable('');
 
 		//Changes the location list based on the search input
-		this.locationList = ko.computed(function(locations){
-			var myList = []
-				self.locations().forEach(function(locationItem){
-				//If the location name includes text from the input, add it to the list
-				if (self.locations()[i].title.toLowerCase().includes(self.currentSearch().toLowerCase())) {
-					myList.push(new Location(locationItem));
-				}
+		this.filteredLocations = ko.computed(function(){
+
+			//explain
+			var query = self.currentSearch().toLowerCase();
+
+			console.log(self.currentSearch());
+
+			//read knock me out - filtering an array section
+			//MDN indexOf
+			return ko.utils.arrayFilter(self.locations(), function(locationItem) {
+				var title = locationItem.title.toLowerCase();
+				console.log(title);
+				return title.indexOf(query) !== -1;
 			});
 
-			return myList;
+		});
 
-		}, this);
 
 
 		//Wiki AJAX request
-		var wikiUrl = 'http://en.wikipedia.org/w/api.php?action=opensearch&search=' + this.currentSearch + '&format=json&callback=wikiCallback';
+		// var wikiUrl = 'http://en.wikipedia.org/w/api.php?action=opensearch&search=' + this.currentSearch + '&format=json&callback=wikiCallback';
 
-		$.ajax ({
-			url: wikiUrl,
-			dataType: "jsonp",
-			//jsonp: "callback",
-			success: function(response) {
-				var articleList = response[1];
+		// $.ajax ({
+		// 	url: wikiUrl,
+		// 	dataType: "jsonp",
+		// 	//jsonp: "callback",
+		// 	success: function(response) {
+		// 		var articleList = response[1];
 
-				for (var i=0; i < articleList.length; i++) {
-					articleStr = articleList[i];
-					var url = 'http://en.wikipedia.org/wiki/' + articleStr;
-				};
-			}
-		})
-	}
+		// 		for (var i=0; i < articleList.length; i++) {
+		// 			articleStr = articleList[i];
+		// 			var url = 'http://en.wikipedia.org/wiki/' + articleStr;
+		// 		};
+		// 	}
+		// })
 };
 
 
