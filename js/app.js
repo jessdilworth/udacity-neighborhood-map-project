@@ -13,6 +13,7 @@ var localSpots = {
 
 	};
 
+var $wikiElem = $('#wikipedia-articles');
 //VIEWMODEL
 
 //Data for locations
@@ -55,7 +56,7 @@ var viewModel = function() {
 
 	}
 
-		// This will store the search results in an observable array via this.filteredItems
+		// This will store the search results in an observable array 
 		self.items = ko.observableArray();
 
 		//This will track the user input to the search box
@@ -69,35 +70,46 @@ var viewModel = function() {
 
 			console.log(self.currentSearch());
 
-			//read knock me out - filtering an array section
-			//MDN indexOf
 			return ko.utils.arrayFilter(self.locations(), function(locationItem) {
 				var title = locationItem.title.toLowerCase();
-				console.log(title);
 				return title.indexOf(query) !== -1;
 			});
-
 		});
 
 
 
-		//Wiki AJAX request
-		// var wikiUrl = 'http://en.wikipedia.org/w/api.php?action=opensearch&search=' + this.currentSearch + '&format=json&callback=wikiCallback';
+		// Wikipedia AJAX request
 
-		// $.ajax ({
-		// 	url: wikiUrl,
-		// 	dataType: "jsonp",
-		// 	//jsonp: "callback",
-		// 	success: function(response) {
-		// 		var articleList = response[1];
+		self.articleResults = ko.computed(function(){
 
-		// 		for (var i=0; i < articleList.length; i++) {
-		// 			articleStr = articleList[i];
-		// 			var url = 'http://en.wikipedia.org/wiki/' + articleStr;
-		// 		};
-		// 	}
-		// })
+			var searchString = self.currentSearch().toLowerCase();
+			var wikiUrl = 'http://en.wikipedia.org/w/api.php?action=opensearch&search=' + searchString + '&format=json&callback=wikiCallback'
+
+			$.ajax ({
+				url: wikiUrl,
+				dataType: "jsonp",
+				//jsonp: "callback",
+				success: function(response){
+					var articleList = response[1];
+					console.log(articleList);
+
+					if (articleList.length > 0) {
+						for (var i=0; i < articleList.length; i++) {
+							articleStr = articleList[i];
+							var url = 'http://en.wikipedia.org/wiki/' + articleStr;
+							return url;
+						};
+					} else {
+						console.log('no article list');
+					}
+				}
+			})
+		})
+
 };
+
+
+
 
 
 //VIEW
