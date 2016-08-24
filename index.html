@@ -26,8 +26,9 @@
         </div>  
 
         <div id="wikipedia-articles">
-            <ul data-bind="foreach: articleResults">
-                <li data-bind="text: url"></li>
+            <h4>Related wikipedia articles</h4>
+            <ul data-bind="foreach: myArticles">
+                <li data-bind="text: $data"></li>
             </ul>
         </div>
 

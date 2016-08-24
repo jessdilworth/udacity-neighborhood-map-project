@@ -79,6 +79,9 @@ var viewModel = function() {
 
 
 		// Wikipedia AJAX request
+		self.myArticles=ko.observableArray();
+
+		self.articleLinks=ko.observableArray();
 
 		self.articleResults = ko.computed(function(){
 
@@ -93,14 +96,17 @@ var viewModel = function() {
 					var articleList = response[1];
 					console.log(articleList);
 
-					if (articleList.length > 0) {
-						for (var i=0; i < articleList.length; i++) {
-							articleStr = articleList[i];
-							var url = 'http://en.wikipedia.org/wiki/' + articleStr;
-							return url;
+					if (articleList) {
+						self.myArticles(articleList);
+						for (var i=0; i < self.myArticles().length; i++) {
+							articleStr = self.myArticles()[i];
+							var url = '<a href=' + 'http://en.wikipedia.org/wiki/'+ articleStr + '>' + articleStr + '</a>';
+							console.log(url);
+							self.articleLinks(url);
+							return self.articleLinks();
 						};
 					} else {
-						console.log('no article list');
+						var errorString = 'no article list';
 					}
 				}
 			})
