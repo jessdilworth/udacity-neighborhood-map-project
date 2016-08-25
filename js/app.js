@@ -1,4 +1,3 @@
-//Search functionality thanks to https://github.com/Zayah117/neighborhood-map-project/blob/master/index.html
 
 //MODEL
 
@@ -56,27 +55,71 @@ var viewModel = function() {
 
 	}
 
-		// This will store the search results in an observable array 
-		self.items = ko.observableArray();
 
-		//This will track the user input to the search box
-		this.currentSearch = ko.observable('');
+//LIST FILTERING
 
-		//Changes the location list based on the search input
-		this.filteredLocations = ko.computed(function(){
+	//This will track the user input to the search box
+	this.currentSearch = ko.observable('');
 
-			//explain
-			var query = self.currentSearch().toLowerCase();
+	//Changes the location list based on the search input
+	this.filteredLocations = ko.computed(function(){
 
-			console.log(self.currentSearch());
+		//explain
+		var query = self.currentSearch().toLowerCase();
 
-			return ko.utils.arrayFilter(self.locations(), function(locationItem) {
-				var title = locationItem.title.toLowerCase();
-				return title.indexOf(query) !== -1;
-			});
+		console.log(self.currentSearch());
+
+		return ko.utils.arrayFilter(self.locations(), function(locationItem) {
+			var title = locationItem.title.toLowerCase();
+			return title.indexOf(query) !== -1;
 		});
 
+	});
 
+
+//MARKER FILTERING
+//With help thanks to https://github.com/Zayah117/neighborhood-map-project/blob/master/index.html
+
+    self.visiblePlaces = ko.observableArray();
+
+    // This pushes all the objects from the locations observable array into
+    //a new array which we will use for filtering
+    
+    self.moveLocations = function(){
+	    for (var i=0; i < self.locations().length; i++) {
+	    	self.visiblePlaces.push(locations()[i]);
+	    	console.log(locations()[i].title);
+		};
+	};
+
+	//The following clears all the current markers and then populates them 
+	//into visiblePlaces based on whether it matches the location title
+    self.filterMarkers = function() {
+    	var searchQuery = self.currentSearch().toLowerCase();
+
+    	self.visiblePlaces.removeAll();
+
+
+    	for (var i=0; i < self.locations().length; i++) {
+    		self.locations()[i].marker.setVisible(false);
+    		console.log(self.locations()[i]);
+    	}	
+
+    	if (self.locations()[i].title.toLowerCase().indexOf(searchQuery) !== -1) {
+    		self.visiblePlaces.push(locations()[i]);
+    		console.log(locations()[i]);
+    	}
+
+
+	    for (var i=0; i < self.visiblePlaces().length; i++) {
+	    	self.locations()[i].marker.serVisible(true);
+	    }
+    	
+    };
+
+
+
+//WIKIPEDIA ARTICLE SEARCH
 
 		// Wikipedia AJAX request
 		self.myArticles=ko.observableArray();
@@ -101,7 +144,7 @@ var viewModel = function() {
 
 						};
 					} else {
-						var errorString = 'no article list';
+						var errorString = 'No articles could be found right now. Sorry about that!';
 					}
 				}
 			})
@@ -129,3 +172,10 @@ function createMap() {
 	ko.applyBindings(new viewModel());
 
 };
+
+function googleError() {
+    if (typeof google === "undefined") {
+        $('#map').html('<h1>' + "Oops! Something went wrong. Wait a little bit, then try refreshing." + '</h1>');
+    }
+};
+
