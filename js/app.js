@@ -81,8 +81,6 @@ var viewModel = function() {
 		// Wikipedia AJAX request
 		self.myArticles=ko.observableArray();
 
-		self.articleLinks=ko.observableArray();
-
 		self.articleResults = ko.computed(function(){
 
 			var searchString = self.currentSearch().toLowerCase();
@@ -93,17 +91,14 @@ var viewModel = function() {
 				dataType: "jsonp",
 				//jsonp: "callback",
 				success: function(response){
-					var articleList = response[1];
-					console.log(articleList);
+					var articleList = response[3];
 
 					if (articleList) {
 						self.myArticles(articleList);
+
+						//might not need this as we are getting the URLs from the wikipedia response
 						for (var i=0; i < self.myArticles().length; i++) {
-							articleStr = self.myArticles()[i];
-							var url = '<a href=' + 'http://en.wikipedia.org/wiki/'+ articleStr + '>' + articleStr + '</a>';
-							console.log(url);
-							self.articleLinks(url);
-							return self.articleLinks();
+
 						};
 					} else {
 						var errorString = 'no article list';
@@ -111,6 +106,7 @@ var viewModel = function() {
 				}
 			})
 		})
+
 
 };
 
