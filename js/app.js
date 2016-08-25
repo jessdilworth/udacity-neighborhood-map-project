@@ -78,45 +78,20 @@ var viewModel = function() {
 
 
 //MARKER FILTERING
-//With help thanks to https://github.com/Zayah117/neighborhood-map-project/blob/master/index.html
+//With help thanks to https://github.com/Zayah117/neighborhood-map-project4
 
-    self.visiblePlaces = ko.observableArray();
+	this.locationList = ko.computed(function() {
+		self.locations().forEach(function(locationItem){
+			self.myList = []
 
-    // This pushes all the objects from the locations observable array into
-    //a new array which we will use for filtering
-    
-    self.moveLocations = function(){
-	    for (var i=0; i < self.locations().length; i++) {
-	    	self.visiblePlaces.push(locations()[i]);
-	    	console.log(locations()[i].title);
-		};
-	};
-
-	//The following clears all the current markers and then populates them 
-	//into visiblePlaces based on whether it matches the location title
-    self.filterMarkers = function() {
-    	var searchQuery = self.currentSearch().toLowerCase();
-
-    	self.visiblePlaces.removeAll();
-
-
-    	for (var i=0; i < self.locations().length; i++) {
-    		self.locations()[i].marker.setVisible(false);
-    		console.log(self.locations()[i]);
-    	}	
-
-    	if (self.locations()[i].title.toLowerCase().indexOf(searchQuery) !== -1) {
-    		self.visiblePlaces.push(locations()[i]);
-    		console.log(locations()[i]);
-    	}
-
-
-	    for (var i=0; i < self.visiblePlaces().length; i++) {
-	    	self.locations()[i].marker.serVisible(true);
-	    }
-    	
-    };
-
+			// If the location name includes text from the input add it to the list
+			if (locationItem.title.toLowerCase().includes(self.currentSearch().toLowerCase())) {
+				locationItem.marker.setMap(map);
+			} else {
+				locationItem.marker.setMap(null);
+			}
+		});
+	}, this);     
 
 
 //WIKIPEDIA ARTICLE SEARCH

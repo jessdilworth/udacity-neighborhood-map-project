@@ -3,6 +3,7 @@
     <head>
         <meta charset="utf-8">
         <meta http-equiv="x-ua-compatible" content="ie=edge">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
         <title>Crystal Palace Neighborhood Map</title>
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -14,21 +15,35 @@
 
     </head>
     <body>
-        <div id="map" style="width:500px;height:380px;"></div>
-        
-        <ul data-bind="foreach: filteredLocations">
-            <li data-bind="text: title"></li>
-        </ul>   
+        <div class="container-fluid">
 
-        <div>
-            <input data-bind="textInput: currentSearch" placeholder="filter local attractions">
-        </div>  
+            <div class="row">
+                <div class="col-md-4">
+                    <div id="map" style="width:300px;height:380px;">
+                    </div>
+                </div>
+     
+                <div class="col-md-4">
+                    <ul data-bind="foreach: filteredLocations; foreach: locationList">
+                        <li data-bind="text: title"></li>
+                    </ul>     
+                    <div id="search-box">
+                        <input data-bind="textInput: currentSearch" placeholder="filter local attractions">
+                    </div>  
+                </div>
+            </div>
 
-        <div id="wikipedia-articles">
-            <h4>Related wikipedia articles</h4>
-            <ul data-bind="foreach: myArticles">
-                <li><a data-bind="attr: {href: $data}"><h6 data-bind="text: $data"></h6></a></li>
-            </ul>
+            <div class="row">
+                <div class="col-md-4">    
+                    <div id="wikipedia-articles">
+                        <h4>Related wikipedia articles</h4>
+                        <ul data-bind="foreach: myArticles">
+                            <li><a data-bind="attr: {href: $data}"><h6 data-bind="text: $data"></h6></a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
         </div>
 
         <script src="js/lib/jquery-1.12.0.min.js"></script>
