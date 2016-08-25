@@ -1,3 +1,12 @@
+ul {
+    padding: 0px;
+}
+
 li {
     list-style: none;
+    padding: 5px;
+}
+
+#wikipedia-articles {
+    padding-top: 25px;
 }

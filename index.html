@@ -15,26 +15,29 @@
 
     </head>
     <body>
-        <div class="container-fluid">
+        <div class="container-fluid wrapper">
+            <div id="header">
+                <h1>Neighborhood Map Project</h1>
+                <h2>Crystal Palace, London</h2>
+            </div>
+        </div>
 
+        <div class="container-fluid wrapper">
             <div class="row">
-                <div class="col-md-4">
-                    <div id="map" style="width:300px;height:380px;">
+                <div class="col-sm-5">
+                    <div id="map" style="width:350px;height:380px;">
                     </div>
                 </div>
      
-                <div class="col-md-4">
+                <div class="col-sm-4">
+                    <h3>Local points of interest</h3>
                     <ul data-bind="foreach: filteredLocations; foreach: locationList">
                         <li data-bind="text: title"></li>
                     </ul>     
                     <div id="search-box">
                         <input data-bind="textInput: currentSearch" placeholder="filter local attractions">
                     </div>  
-                </div>
-            </div>
-
-            <div class="row">
-                <div class="col-md-4">    
+   
                     <div id="wikipedia-articles">
                         <h4>Related wikipedia articles</h4>
                         <ul data-bind="foreach: myArticles">
