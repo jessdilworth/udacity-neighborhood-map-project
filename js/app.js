@@ -33,6 +33,7 @@ var viewModel = function() {
     	content: 'test content'
 	});
 
+	self.markerArray=ko.observableArray();
 
 	for (var i=0; i < self.locations().length; i++) {
 
@@ -41,18 +42,36 @@ var viewModel = function() {
 			var marker = new google.maps.Marker({
 				map: map,
 				position: position,
-				title: self.locations()[i].title
+				title: self.locations()[i].title,
+				animation: google.maps.Animation.DROP
 			});
+
 
 		self.locations()[i].marker = marker;
 
-
 		//setting up infowindows to open on click
-		google.maps.event.addListener(marker, 'click', function () {
-		infowindow.setContent(this.title);
-		infowindow.open(map, this);
-		});
+		google.maps.event.addListener(marker, 'click', function() {
+			infowindow.setContent(this.title);
+			infowindow.open(map, this);
+		}, toggleBounce);
 
+		function toggleBounce(marker) {
+			if (marker.getAnimation() !== null) {
+		    marker.setAnimation(null);
+		  } else {
+		    marker.setAnimation(google.maps.Animation.BOUNCE);
+		  }
+
+	   	  console.log(self.markerArray()[i].title);
+		}
+
+
+		// function infoWindowOpen () {
+		// infowindow.setContent(this.title);
+		// infowindow.open(map, this);
+		// };
+
+		//Function to animate markers when clicked
 	}
 
 
@@ -77,8 +96,9 @@ var viewModel = function() {
 	});
 
 
+
 //MARKER FILTERING
-//With help thanks to https://github.com/Zayah117/neighborhood-map-project4
+//With help thanks to https://github.com/Zayah117/neighborhood-map-project
 
 	this.locationList = ko.computed(function() {
 		self.locations().forEach(function(locationItem){
