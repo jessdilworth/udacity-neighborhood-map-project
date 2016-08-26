@@ -47,24 +47,18 @@ var viewModel = function() {
 			});
 
 
-		self.locations()[i].marker = marker;
+		// self.locations()[i].marker = marker;
 
-		//setting up infowindows to open on click
-		google.maps.event.addListener(marker, 'click', function() {
-			infowindow.setContent(this.title);
-			infowindow.open(map, this);
-		}, toggleBounce);
+		// self.markerArray.push(marker);
+		console.log(marker);
+		self.markerArray.push(marker);
 
-		function toggleBounce(marker) {
-			if (marker.getAnimation() !== null) {
-		    marker.setAnimation(null);
-		  } else {
-		    marker.setAnimation(google.maps.Animation.BOUNCE);
-		  }
+		addMarkerListener(marker);
+		
 
-	   	  console.log(self.markerArray()[i].title);
-		}
 
+
+		//setting up infowindows to open on clic
 
 		// function infoWindowOpen () {
 		// infowindow.setContent(this.title);
@@ -73,6 +67,40 @@ var viewModel = function() {
 
 		//Function to animate markers when clicked
 	}
+
+
+	// function addMarkerListener (marker){
+	// 	google.maps.event.addListener(marker, 'click', fucntion(){
+	// 	infowindow.setContent(this.title);
+	// 	infowindow.open(map, this);
+	// 	console.log("Clicked");
+
+	// 	toggleBounce(marker);
+	// 	})
+	// };
+	function addMarkerListener (marker) {
+
+		var f = google.maps.event.addListener(marker, 'click', function() {
+			infowindow.setContent(this.title);
+			infowindow.open(map, this);
+			console.log("Clicked");
+
+			toggleBounce(marker);
+			return f;
+		});
+	}
+
+	//google.maps.event.
+
+	function toggleBounce(marker) {
+		if (marker.getAnimation() !== null) {
+	    marker.setAnimation(null);
+	  } else {
+	    marker.setAnimation(google.maps.Animation.BOUNCE);
+	  }
+
+	}
+
 
 
 //LIST FILTERING
@@ -100,15 +128,21 @@ var viewModel = function() {
 //MARKER FILTERING
 //With help thanks to https://github.com/Zayah117/neighborhood-map-project
 
-	this.locationList = ko.computed(function() {
+
+
+	 this.locationList = ko.computed(function() {
+	 	var i = 0;
 		self.locations().forEach(function(locationItem){
-			self.myList = []
+			
+
 
 			// If the location name includes text from the input add it to the list
-			if (locationItem.title.toLowerCase().includes(self.currentSearch().toLowerCase())) {
-				locationItem.marker.setMap(map);
+			if (self.markerArray()[i].title.toLowerCase().includes(self.currentSearch().toLowerCase())) {
+				self.markerArray()[i].setMap(map);
+				i++;
 			} else {
-				locationItem.marker.setMap(null);
+				self.markerArray()[i].setMap(null);
+				i++;
 			}
 		});
 	}, this);     
