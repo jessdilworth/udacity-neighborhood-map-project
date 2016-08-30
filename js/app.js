@@ -15,12 +15,6 @@ var localSpots = {
 var $wikiElem = $('#wikipedia-articles');
 //VIEWMODEL
 
-//Data for locations
-var Location = function(data) {
-	this.title = ko.observable(data.title);
-	this.lat = ko.observable(data.lat);
-	this.lng = ko.observable(data.lng);
-};
 
 var viewModel = function() {
 
@@ -39,6 +33,7 @@ var viewModel = function() {
 
 			var position = new google.maps.LatLng(self.locations()[i].lat, self.locations()[i].lng);
 			
+			//this will create a marker for each point of interest
 			var marker = new google.maps.Marker({
 				map: map,
 				position: position,
@@ -47,37 +42,14 @@ var viewModel = function() {
 			});
 
 
-		// self.locations()[i].marker = marker;
-
-		// self.markerArray.push(marker);
-		console.log(marker);
 		self.markerArray.push(marker);
 
 		addMarkerListener(marker);
 		
-
-
-
-		//setting up infowindows to open on clic
-
-		// function infoWindowOpen () {
-		// infowindow.setContent(this.title);
-		// infowindow.open(map, this);
-		// };
-
-		//Function to animate markers when clicked
 	}
 
-
-	// function addMarkerListener (marker){
-	// 	google.maps.event.addListener(marker, 'click', fucntion(){
-	// 	infowindow.setContent(this.title);
-	// 	infowindow.open(map, this);
-	// 	console.log("Clicked");
-
-	// 	toggleBounce(marker);
-	// 	})
-	// };
+	//This function opens the infowindow and initiates the animation 
+	//when a marker is clicked.
 	function addMarkerListener (marker) {
 
 		var f = google.maps.event.addListener(marker, 'click', function() {
@@ -90,13 +62,13 @@ var viewModel = function() {
 		});
 	}
 
-	//google.maps.event.
 
 	function toggleBounce(marker) {
 		if (marker.getAnimation() !== null) {
 	    marker.setAnimation(null);
 	  } else {
 	    marker.setAnimation(google.maps.Animation.BOUNCE);
+	    setTimeout(function(){ marker.setAnimation(null); }, 750);
 	  }
 
 	}
@@ -111,7 +83,6 @@ var viewModel = function() {
 	//Changes the location list based on the search input
 	this.filteredLocations = ko.computed(function(){
 
-		//explain
 		var query = self.currentSearch().toLowerCase();
 
 		console.log(self.currentSearch());
@@ -123,28 +94,45 @@ var viewModel = function() {
 
 	});
 
+	//This function triggers the marker animation when a list item is clicked
+	self.addListListener = function (marker){
+
+		var timeoutMarker
+
+		for (var i=0; i < self.markerArray().length; i++) {
+			if (self.markerArray()[i].title == this.title) {
+
+	   			self.markerArray()[i].setAnimation(google.maps.Animation.BOUNCE);
+	   			
+	   			//Because this is in a for loop, I have put the setTimeout function within
+	   			//another function that takes i as a parameter.
+	   			(function(i){
+	   				setTimeout (function(){
+	   					self.markerArray()[i].setAnimation(null);
+	   				}, 1400);
+	   			})(i);
+			}
+		}
+
+	};
+
 
 
 //MARKER FILTERING
 //With help thanks to https://github.com/Zayah117/neighborhood-map-project
 
 
-
 	 this.locationList = ko.computed(function() {
-	 	var i = 0;
-		self.locations().forEach(function(locationItem){
+	 	for (var i=0; i < self.locations().length; i++) {
 			
-
-
 			// If the location name includes text from the input add it to the list
 			if (self.markerArray()[i].title.toLowerCase().includes(self.currentSearch().toLowerCase())) {
 				self.markerArray()[i].setMap(map);
-				i++;
+
 			} else {
 				self.markerArray()[i].setMap(null);
-				i++;
 			}
-		});
+		};
 	}, this);     
 
 
@@ -202,6 +190,7 @@ function createMap() {
 
 };
 
+//In case google maps cannot be loaded
 function googleError() {
     if (typeof google === "undefined") {
         $('#map').html('<h1>' + "Oops! Something went wrong. Wait a little bit, then try refreshing." + '</h1>');
