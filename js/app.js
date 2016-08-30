@@ -3,10 +3,10 @@
 
 var localSpots = {
 		pointsOfInterest: [
-			{title: 'Westow House Pub', lat: 51.4200164, lng: -0.0809779},
-			{title: 'Crystal Palace Antique and Modern', lat:51.4200389, lng: -0.0816344},
-			{title: 'Four Hundred Rabbits', lat: 51.4189756, lng: -0.0850944},
-			{title: 'The Secret Garden', lat: 51.4172203, lng: -0.0847438},
+			{title: 'Dulwich Picture Gallery', lat: 51.4459785, lng: -0.0863698},
+			{title: 'Horniman Museum and Gardens', lat:51.4410383, lng: -0.063203},
+			{title: 'Brockwell Park Lido', lat: 51.45305, lng: -0.1086446},
+			{title: 'Crystal Palace Dinosaurs', lat: 51.4165373, lng: -0.0697965},
 			{title: 'Crystal Palace Station', lat: 51.4181133, lng: -0.0747687}
 		]
 
@@ -141,52 +141,46 @@ var viewModel = function() {
 		// Wikipedia AJAX request
 		self.myArticles=ko.observableArray();
 
-		self.articleResults = ko.computed(function(){
-			for (var i=0; i < self.markerArray().length; i++) {
-				$.ajax ({
+		self.myArticleTitles=ko.observableArray();
+
+		for (var i=0; i < self.markerArray().length; i++) {
+			$.ajax ({
 				url: 'http://en.wikipedia.org/w/api.php?action=opensearch&search=' + self.markerArray()[i].title + '&format=json&callback=wikiCallback',
 				dataType: "jsonp",
 				//jsonp: "callback",
 				success: function(response){
 					var articleList = response[3];
+					var articleTitles = response[1]
 
 					if (articleList) {
 						self.myArticles(articleList);
-						console.log(articleList);
+						// console.log(articleList);
 						//might not need this as we are getting the URLs from the wikipedia response
-						for (var i=0; i < self.myArticles().length; i++) {
-
-						};
-					} else {
-						var errorString = 'No articles could be found right now. Sorry about that!';
+						
 					}
+					if (articleTitles) {
+						self.myArticleTitles(articleTitles);
+						console.log(articleTitles);
+					}
+
 				}
 			})
+
+		}
+		
+
+
+		function queryArticleTitles (){
+			var wikipediaError = "Oops! Looks like there are no articles related to this location";
+			for (var i=0; i < self.myArticleTitles().length; i++) {
+				var searchUrl = self.currentSearch().toLowerCase();
+				if (self.myArticleTitles()[i].toLowerCase().includes(searchUrl)){
+					return self.myArticleTitles()[i];
+				} else {
+					return wikipediaError;
+				}
 			}
-
-			var searchString = self.currentSearch().toLowerCase();
-			var wikiUrl = 'http://en.wikipedia.org/w/api.php?action=opensearch&search=' + searchString + '&format=json&callback=wikiCallback';
-
-			$.ajax ({
-				url: wikiUrl,
-				dataType: "jsonp",
-				//jsonp: "callback",
-				success: function(response){
-					var articleList = response[3];
-
-					if (articleList) {
-						self.myArticles(articleList);
-
-						//might not need this as we are getting the URLs from the wikipedia response
-						for (var i=0; i < self.myArticles().length; i++) {
-
-						};
-					} else {
-						var errorString = 'No articles could be found right now. Sorry about that!';
-					}
-				}
-			})
-		})
+		}
 
 
 };
@@ -201,8 +195,8 @@ var viewModel = function() {
 function createMap() {
 
 	var myCPMapSpecs = {
-		zoom: 15,
-		center: new google.maps.LatLng(51.4200164, -0.0809779),
+		zoom: 12,
+		center: new google.maps.LatLng(51.4459785, -0.0863698),
 	};
 	
 	map = new google.maps.Map(document.getElementById('map'), myCPMapSpecs);

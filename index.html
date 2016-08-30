@@ -17,8 +17,8 @@
     <body>
         <div class="container-fluid wrapper">
             <div id="header">
-                <h1>Neighborhood Map Project</h1>
-                <h2>Crystal Palace, London</h2>
+                <h1>South London: Places of Historical or Cultural Significance</h1>
+                <h2>Neighborhood Map Project</h2>
             </div>
         </div>
 
@@ -40,8 +40,8 @@
    
                     <div id="wikipedia-articles">
                         <h4>Related wikipedia articles</h4>
-                        <ul data-bind="foreach: myArticles">
-                            <li><a data-bind="attr: {href: $data}"><h6 data-bind="text: $data"></h6></a></li>
+                        <ul data-bind="foreach: myArticleTitles">
+                            <li><a data-bind="attr: {href: $data}"><h6 data-bind="text: myArticleTitles"></h6></a></li>
                         </ul>
                         <h6>Articles provided by wikipedia.org</h6>
                     </div>
