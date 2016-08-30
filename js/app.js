@@ -142,9 +142,30 @@ var viewModel = function() {
 		self.myArticles=ko.observableArray();
 
 		self.articleResults = ko.computed(function(){
+			for (var i=0; i < self.markerArray().length; i++) {
+				$.ajax ({
+				url: 'http://en.wikipedia.org/w/api.php?action=opensearch&search=' + self.markerArray()[i].title + '&format=json&callback=wikiCallback',
+				dataType: "jsonp",
+				//jsonp: "callback",
+				success: function(response){
+					var articleList = response[3];
+
+					if (articleList) {
+						self.myArticles(articleList);
+						console.log(articleList);
+						//might not need this as we are getting the URLs from the wikipedia response
+						for (var i=0; i < self.myArticles().length; i++) {
+
+						};
+					} else {
+						var errorString = 'No articles could be found right now. Sorry about that!';
+					}
+				}
+			})
+			}
 
 			var searchString = self.currentSearch().toLowerCase();
-			var wikiUrl = 'http://en.wikipedia.org/w/api.php?action=opensearch&search=' + searchString + '&format=json&callback=wikiCallback'
+			var wikiUrl = 'http://en.wikipedia.org/w/api.php?action=opensearch&search=' + searchString + '&format=json&callback=wikiCallback';
 
 			$.ajax ({
 				url: wikiUrl,
