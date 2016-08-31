@@ -29,6 +29,35 @@ var viewModel = function() {
 
 	self.markerArray=ko.observableArray();
 
+	//This function opens the infowindow and initiates the animation 
+	//when a marker is clicked.
+	// function addMarkerListener (marker) {
+
+	// function toggleBounce(marker) {
+	this.toggleBounce = function(marker) {
+		var self = this;
+		if (marker.getAnimation() !== null) {
+	    	marker.setAnimation(null);
+	  	} else {
+	    	marker.setAnimation(google.maps.Animation.BOUNCE);
+	    	setTimeout(function(){ marker.setAnimation(null); }, 750);
+	  	}
+
+	}
+	
+	this.addMarkerListener = function(marker) {
+		var self = this;
+
+		var f = google.maps.event.addListener(marker, 'click', function() {
+			infowindow.setContent(this.title);
+			infowindow.open(map, this);
+			console.log("Clicked");
+
+			self.toggleBounce(marker);
+			return f;
+		});
+	}
+
 	for (var i=0; i < self.locations().length; i++) {
 
 			var position = new google.maps.LatLng(self.locations()[i].lat, self.locations()[i].lng);
@@ -40,52 +69,24 @@ var viewModel = function() {
 				title: self.locations()[i].title,
 				animation: google.maps.Animation.DROP
 			});
-
+		console.log(self);
 
 		self.markerArray.push(marker);
 
-		addMarkerListener(marker);
+		self.addMarkerListener(marker);
 		
 	}
 
-	//This function opens the infowindow and initiates the animation 
-	//when a marker is clicked.
-	function addMarkerListener (marker) {
 
-		var f = google.maps.event.addListener(marker, 'click', function() {
-			infowindow.setContent(this.title);
-			infowindow.open(map, this);
-			console.log("Clicked");
-
-			toggleBounce(marker);
-			return f;
-		});
-	}
-
-
-	function toggleBounce(marker) {
-		if (marker.getAnimation() !== null) {
-	    marker.setAnimation(null);
-	  } else {
-	    marker.setAnimation(google.maps.Animation.BOUNCE);
-	    setTimeout(function(){ marker.setAnimation(null); }, 750);
-	  }
-
-	}
-
-
-
-//LIST FILTERING
+	//LIST FILTERING
 
 	//This will track the user input to the search box
-	this.currentSearch = ko.observable('');
+	self.currentSearch = ko.observable('');
 
 	//Changes the location list based on the search input
-	this.filteredLocations = ko.computed(function(){
+	self.filteredLocations = ko.computed(function(){
 
 		var query = self.currentSearch().toLowerCase();
-
-		console.log(self.currentSearch());
 
 		return ko.utils.arrayFilter(self.locations(), function(locationItem) {
 			var title = locationItem.title.toLowerCase();
@@ -97,7 +98,7 @@ var viewModel = function() {
 	//This function triggers the marker animation when a list item is clicked
 	self.addListListener = function (marker){
 
-		var timeoutMarker
+		var timeoutMarker;
 
 		for (var i=0; i < self.markerArray().length; i++) {
 			if (self.markerArray()[i].title == this.title) {
@@ -118,11 +119,12 @@ var viewModel = function() {
 
 
 
-//MARKER FILTERING
-//With help thanks to https://github.com/Zayah117/neighborhood-map-project
+	//MARKER FILTERING
+	//With help thanks to https://github.com/Zayah117/neighborhood-map-project
 
 
 	 this.locationList = ko.computed(function() {
+
 	 	for (var i=0; i < self.locations().length; i++) {
 			
 			// If the location name includes text from the input add it to the list
@@ -132,59 +134,70 @@ var viewModel = function() {
 			} else {
 				self.markerArray()[i].setMap(null);
 			}
-		};
+		}
 	}, this);     
 
 
-//WIKIPEDIA ARTICLE SEARCH
+	//WIKIPEDIA ARTICLE SEARCH
 
 		// Wikipedia AJAX request
 		self.myArticles=ko.observableArray();
 
 		self.myArticleTitles=ko.observableArray();
 
-		for (var i=0; i < self.markerArray().length; i++) {
-			$.ajax ({
-				url: 'http://en.wikipedia.org/w/api.php?action=opensearch&search=' + self.markerArray()[i].title + '&format=json&callback=wikiCallback',
-				dataType: "jsonp",
-				//jsonp: "callback",
-				success: function(response){
-					var articleList = response[3];
-					var articleTitles = response[1]
+		self.articleReturn=ko.computed(function(){
 
-					if (articleList) {
-						self.myArticles(articleList);
-						// console.log(articleList);
-						//might not need this as we are getting the URLs from the wikipedia response
-						
+			for (var i=0; i < self.markerArray().length; i++) {
+				$.ajax ({
+					url: 'http://en.wikipedia.org/w/api.php?action=opensearch&search=' + self.markerArray()[i].title + '&format=json&callback=wikiCallback',
+					dataType: "jsonp",
+					//jsonp: "callback",
+					success: function(response){
+						var articleList = response[3];
+						var articleTitles = response[1];
+
+						if (articleList) {
+							self.myArticles(articleList);
+							// console.log(articleList);
+							//might not need this as we are getting the URLs from the wikipedia response
+							
+						}
+						if (articleTitles) {
+							self.myArticleTitles(articleTitles);
+							console.log(articleTitles);
+							searchWikipedia(self.currentSearch);
+						}
+
 					}
-					if (articleTitles) {
-						self.myArticleTitles(articleTitles);
-						console.log(articleTitles);
-					}
+				});
 
-				}
-			})
-
-		}
-		
-
-
-		function queryArticleTitles (){
-			var wikipediaError = "Oops! Looks like there are no articles related to this location";
-			for (var i=0; i < self.myArticleTitles().length; i++) {
-				var searchUrl = self.currentSearch().toLowerCase();
-				if (self.myArticleTitles()[i].toLowerCase().includes(searchUrl)){
-					return self.myArticleTitles()[i];
-				} else {
-					return wikipediaError;
-				}
 			}
-		}
 
+			// function searchWikipedia () {
+			this.searchWikipedia = function () {
+				var self = this;
+				console.log(self.currentSearch());
+				var indices = [];
+				var idx = self.myArticleTitles().indexOf(self.currentSearch());
+				while (idx != -1) {
+					indices.push(idx);
+					idx = self.myArticleTitles().indexOf(self.currentSearch(), + 1);
+				}
 
-};
-
+				
+				// for (var i=0; i < self.myArticleTitles().length; i++) {
+				// 	console.log(self.currentSearch());
+				// 	var searchUrl = self.currentSearch().toLowerCase();
+				// 	if (self.myArticleTitles()[i].toLowerCase().includes(searchUrl)){
+				// 		return self.myArticleTitles()[i];
+				// 	} else {
+				// 		return wikipediaError;
+				// 	}
+				// }
+			}
+		});
+		
+}
 
 
 
@@ -203,12 +216,12 @@ function createMap() {
 
 	ko.applyBindings(new viewModel());
 
-};
+}
 
 //In case google maps cannot be loaded
 function googleError() {
     if (typeof google === "undefined") {
         $('#map').html('<h1>' + "Oops! Something went wrong. Wait a little bit, then try refreshing." + '</h1>');
     }
-};
+}
 

@@ -40,8 +40,8 @@
    
                     <div id="wikipedia-articles">
                         <h4>Related wikipedia articles</h4>
-                        <ul data-bind="foreach: myArticleTitles">
-                            <li><a data-bind="attr: {href: $data}"><h6 data-bind="text: myArticleTitles"></h6></a></li>
+                        <ul data-bind="foreach: articleReturn">
+                            <li><a data-bind="attr: {href: $data}"><h6 data-bind="text: $data"></h6></a></li>
                         </ul>
                         <h6>Articles provided by wikipedia.org</h6>
                     </div>
