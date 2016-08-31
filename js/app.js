@@ -12,7 +12,6 @@ var localSpots = {
 
 	};
 
-var $wikiElem = $('#wikipedia-articles');
 //VIEWMODEL
 
 
@@ -145,7 +144,7 @@ var viewModel = function() {
 		// this.myArticleTitles=ko.observableArray();
 
 		this.articleReturn= function(){
-			var responses = [];
+
 			for (var i=0; i < self.markerArray().length; i++) {
 	
 				$.ajax ({
@@ -169,19 +168,15 @@ var viewModel = function() {
 		
 		};
 
+		
 		this.ajaxRequestSuccess = ko.computed(function() {
+
+			var locationArticle=[];
 
 			self.articleReturn();
 
-			self.locationArticle=ko.observableArray();
-
 			function searchWikipedia () {
-				// if (articleList) {
-				// 	self.myArticles(articleList);
-				// 	// console.log(articleList);
-				// 	//might not need this as we are getting the URLs from the wikipedia response
-					
-				// }
+
 				console.log(self.currentSearch());
 
 				if (myArticles) {
@@ -191,27 +186,20 @@ var viewModel = function() {
 							// console.log(myArticles[i][j]);
 							if (myArticles[i][j].toLowerCase().includes(self.currentSearch().toLowerCase())) {
 								console.log(myArticles[i][j]);
-								self.locationArticle().push(myArticles[i][j]);
+								locationArticle.push(myArticles[i][j]);
+								
 
 							}
 						}
 					}
-
-					// console.log(myArticles.length);
-					// console.log(self.currentSearch());
-					// var indices = [];
-					// var idx = myArticles.indexOf(self.currentSearch());
-					// while (idx != -1) {
-					// 	indices.push(idx);
-					// 	idx = myArticles.indexOf(self.currentSearch(), + 1);
-					// }
-					// console.log(indices);
 				}
 			}
 
 			searchWikipedia();
 
-		})
+			return locationArticle;
+
+		});
 
 		
 		
