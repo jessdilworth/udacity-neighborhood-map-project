@@ -43,7 +43,7 @@ var viewModel = function() {
 	    	setTimeout(function(){ marker.setAnimation(null); }, 750);
 	  	}
 
-	}
+	};
 
 	this.addMarkerListener = function(marker) {
 		var self = this;
@@ -56,7 +56,7 @@ var viewModel = function() {
 			self.toggleBounce(marker);
 			return f;
 		});
-	}
+	};
 
 	for (var i=0; i < self.locations().length; i++) {
 
@@ -98,8 +98,8 @@ var viewModel = function() {
 	self.listAnimationTimeout = function(i) {
 		setTimeout (function(){
 			self.markerArray()[i].setAnimation(null);
-			}, 1400)
-	}
+			}, 1400);
+	};
 
 	//This function triggers the marker animation when a list item is clicked
 	self.addListListener = function (marker){
@@ -114,7 +114,7 @@ var viewModel = function() {
 			}
 		}
 
-	}
+	};
 
 
 
@@ -192,10 +192,10 @@ var viewModel = function() {
 				// 		return wikipediaError;
 				// 	}
 				// }
-			}
+			};
 		});
 		
-}
+};
 
 
 
