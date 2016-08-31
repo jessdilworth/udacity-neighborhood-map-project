@@ -144,56 +144,62 @@ var viewModel = function() {
 
 		this.myArticleTitles=ko.observableArray();
 
-		this.articleReturn=ko.computed(function(){
-
+		this.articleReturn= function(){
+			var responses = [];
 			for (var i=0; i < self.markerArray().length; i++) {
+	
 				$.ajax ({
 					url: 'http://en.wikipedia.org/w/api.php?action=opensearch&search=' + self.markerArray()[i].title + '&format=json&callback=wikiCallback',
 					dataType: "jsonp",
 					//jsonp: "callback",
-					success: function(response){
-						var articleList = response[3];
-						var articleTitles = response[1];
+					success: function(response) {
+                    	
+                    	self.myArticles().push(response[3]);
+						self.myArticleTitles().push(response[1]);
+						console.log(self.myArticleTitles())
 
-						if (articleList) {
-							self.myArticles(articleList);
-							// console.log(articleList);
-							//might not need this as we are getting the URLs from the wikipedia response
-							
-						}
-						if (articleTitles) {
-							self.myArticleTitles(articleTitles);
-							console.log(articleTitles);
-							searchWikipedia(self.currentSearch);
-						}
-
-					}
+                    	// responses.push(data);
+                	}
+					
 				});
+				// console.log(response);
+				// return response;
 
 			}
+		
+		};
 
-			// function searchWikipedia () {
-			this.searchWikipedia = function () {
-				console.log(self.currentSearch());
-				var indices = [];
-				var idx = self.myArticleTitles().indexOf(self.currentSearch());
-				while (idx != -1) {
-					indices.push(idx);
-					idx = self.myArticleTitles().indexOf(self.currentSearch(), + 1);
-				}
+		this.ajaxRequestSuccess = ko.computed(function() {
 
-				
-				// for (var i=0; i < self.myArticleTitles().length; i++) {
-				// 	console.log(self.currentSearch());
-				// 	var searchUrl = self.currentSearch().toLowerCase();
-				// 	if (self.myArticleTitles()[i].toLowerCase().includes(searchUrl)){
-				// 		return self.myArticleTitles()[i];
-				// 	} else {
-				// 		return wikipediaError;
-				// 	}
+			self.articleReturn();
+
+			function searchWikipedia () {
+				// if (articleList) {
+				// 	self.myArticles(articleList);
+				// 	// console.log(articleList);
+				// 	//might not need this as we are getting the URLs from the wikipedia response
+					
 				// }
-			};
-		});
+				console.log(self.currentSearch());
+
+				if (self.myArticleTitles()) {
+					console.log(self.myArticleTitles());
+					console.log(self.currentSearch());
+					var indices = [];
+					var idx = self.myArticleTitles().toLowerCase().indexOf(self.currentSearch());
+					while (idx != -1) {
+						indices.push(idx);
+						idx = self.myArticleTitles().indexOf(self.currentSearch(), + 1);
+					}
+					console.log(indices);
+				}
+			}
+
+			searchWikipedia();
+
+		})
+
+		
 		
 };
 
