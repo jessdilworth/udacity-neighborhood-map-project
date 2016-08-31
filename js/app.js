@@ -140,9 +140,9 @@ var viewModel = function() {
 	//WIKIPEDIA ARTICLE SEARCH
 
 		// Wikipedia AJAX request
-		this.myArticles=ko.observableArray();
+		var myArticles=[];
 
-		this.myArticleTitles=ko.observableArray();
+		// this.myArticleTitles=ko.observableArray();
 
 		this.articleReturn= function(){
 			var responses = [];
@@ -154,9 +154,9 @@ var viewModel = function() {
 					//jsonp: "callback",
 					success: function(response) {
                     	
-                    	self.myArticles().push(response[3]);
-						self.myArticleTitles().push(response[1]);
-						console.log(self.myArticleTitles())
+                    	myArticles.push(response[3]);
+						// self.myArticleTitles().push(response[1]);
+						// console.log(self.myArticleTitles())
 
                     	// responses.push(data);
                 	}
@@ -173,6 +173,8 @@ var viewModel = function() {
 
 			self.articleReturn();
 
+			self.locationArticle=ko.observableArray();
+
 			function searchWikipedia () {
 				// if (articleList) {
 				// 	self.myArticles(articleList);
@@ -182,16 +184,28 @@ var viewModel = function() {
 				// }
 				console.log(self.currentSearch());
 
-				if (self.myArticleTitles()) {
-					console.log(self.myArticleTitles());
-					console.log(self.currentSearch());
-					var indices = [];
-					var idx = self.myArticleTitles().toLowerCase().indexOf(self.currentSearch());
-					while (idx != -1) {
-						indices.push(idx);
-						idx = self.myArticleTitles().indexOf(self.currentSearch(), + 1);
+				if (myArticles) {
+					// console.log (myArticles);
+					for (var i=0; i < myArticles.length; i++) {
+						for (var j=0; j < myArticles[i].length; j++) {
+							// console.log(myArticles[i][j]);
+							if (myArticles[i][j].toLowerCase().includes(self.currentSearch().toLowerCase())) {
+								console.log(myArticles[i][j]);
+								self.locationArticle().push(myArticles[i][j]);
+
+							}
+						}
 					}
-					console.log(indices);
+
+					// console.log(myArticles.length);
+					// console.log(self.currentSearch());
+					// var indices = [];
+					// var idx = myArticles.indexOf(self.currentSearch());
+					// while (idx != -1) {
+					// 	indices.push(idx);
+					// 	idx = myArticles.indexOf(self.currentSearch(), + 1);
+					// }
+					// console.log(indices);
 				}
 			}
 
