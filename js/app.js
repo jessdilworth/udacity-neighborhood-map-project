@@ -44,7 +44,7 @@ var viewModel = function() {
 	  	}
 
 	}
-	
+
 	this.addMarkerListener = function(marker) {
 		var self = this;
 
@@ -81,10 +81,10 @@ var viewModel = function() {
 	//LIST FILTERING
 
 	//This will track the user input to the search box
-	self.currentSearch = ko.observable('');
+	this.currentSearch = ko.observable('');
 
 	//Changes the location list based on the search input
-	self.filteredLocations = ko.computed(function(){
+	this.filteredLocations = ko.computed(function(){
 
 		var query = self.currentSearch().toLowerCase();
 
@@ -141,11 +141,11 @@ var viewModel = function() {
 	//WIKIPEDIA ARTICLE SEARCH
 
 		// Wikipedia AJAX request
-		self.myArticles=ko.observableArray();
+		this.myArticles=ko.observableArray();
 
-		self.myArticleTitles=ko.observableArray();
+		this.myArticleTitles=ko.observableArray();
 
-		self.articleReturn=ko.computed(function(){
+		this.articleReturn=ko.computed(function(){
 
 			for (var i=0; i < self.markerArray().length; i++) {
 				$.ajax ({
@@ -175,7 +175,6 @@ var viewModel = function() {
 
 			// function searchWikipedia () {
 			this.searchWikipedia = function () {
-				var self = this;
 				console.log(self.currentSearch());
 				var indices = [];
 				var idx = self.myArticleTitles().indexOf(self.currentSearch());
