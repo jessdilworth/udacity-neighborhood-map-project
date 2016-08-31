@@ -95,11 +95,14 @@ var viewModel = function() {
 
 	});
 
+	self.listAnimationTimeout = function(i) {
+		setTimeout (function(){
+			self.markerArray()[i].setAnimation(null);
+			}, 1400)
+	}
+
 	//This function triggers the marker animation when a list item is clicked
 	self.addListListener = function (marker){
-
-		var timeoutMarker;
-
 		for (var i=0; i < self.markerArray().length; i++) {
 			if (self.markerArray()[i].title == this.title) {
 
@@ -107,15 +110,11 @@ var viewModel = function() {
 	   			
 	   			//Because this is in a for loop, I have put the setTimeout function within
 	   			//another function that takes i as a parameter.
-	   			(function(i){
-	   				setTimeout (function(){
-	   					self.markerArray()[i].setAnimation(null);
-	   				}, 1400);
-	   			})(i);
+	   			self.listAnimationTimeout(i);
 			}
 		}
 
-	};
+	}
 
 
 
