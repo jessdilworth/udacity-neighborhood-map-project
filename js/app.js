@@ -152,7 +152,7 @@ var viewModel = function() {
 
 	var myArticles=[];
 
-	//this iterates through the titles of the markers in order to fetch related wikipedia articles and store them in myArticles
+	//This iterates through the titles of the markers in order to fetch related wikipedia articles and store them in myArticles
 	this.articleReturn= function(){
 
 		for (var i=0; i < self.markerArray().length; i++) {
@@ -164,15 +164,10 @@ var viewModel = function() {
 				success: function(response) {
                 	
                 	myArticles.push(response[3]);
-					// self.myArticleTitles().push(response[1]);
-					// console.log(self.myArticleTitles())
-
-                	// responses.push(data);
+					
             	}
 				
 			});
-			// console.log(response);
-			// return response;
 
 		}
 	
