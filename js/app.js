@@ -21,7 +21,7 @@ var viewModel = function() {
 
 	self.locations = ko.observableArray(localSpots.pointsOfInterest);
 
-	var infowindow = new google.maps.InfoWindow({
+	this.infowindow = new google.maps.InfoWindow({
 
     	content: 'test content'
 
@@ -121,7 +121,9 @@ var viewModel = function() {
 		searchWikipedia();
 
 		// return locationArticle;
-		infoContent = marker.title + self.locationArticle();
+		infoContent = '<h4>' + marker.title + '</h4>' + 
+					'<a href=' + self.locationArticle() + '>' + 
+					self.locationArticle() + '</a>';
 	};
 
 
@@ -134,9 +136,9 @@ var viewModel = function() {
 
 				self.ajaxRequestSuccess(marker);
 
-				infowindow.setContent(infoContent);
+				self.infowindow.setContent(infoContent);
 
-				infowindow.open(map, this);
+				self.infowindow.open(map, this);
 
 				self.toggleBounce(marker);
 
@@ -197,13 +199,17 @@ var viewModel = function() {
 
 			if (self.markerArray()[i].title == this.title) {
 
-				// infowindow.setContent(infoContent);
-
-				// infowindow.open(map, marker);
-
 	   			self.markerArray()[i].setAnimation(google.maps.Animation.BOUNCE);
-	   			
+
 	   			self.listAnimationTimeout(i);
+
+	   			self.ajaxRequestSuccess(self.markerArray()[i]);
+
+	   			// self.ajaxRequestSuccess(self.markerArray()[i]);
+
+				self.infowindow.open(self.markerArray()[i].get('map'), self.markerArray()[i]);
+
+				self.infowindow.setContent(infoContent);
 
 			}
 
