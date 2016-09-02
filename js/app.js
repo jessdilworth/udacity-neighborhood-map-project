@@ -83,7 +83,6 @@ var viewModel = function() {
 	//This function matches the search query with the array of article URLs stored in myArticles
 	this.ajaxRequestSuccess = function(marker) {
 
-		// var locationArticle=[];
 
 		console.log(marker.title);
 
@@ -121,7 +120,7 @@ var viewModel = function() {
 		searchWikipedia();
 
 		// return locationArticle;
-		infoContent = '<h4>' + marker.title + '</h4>' + 
+		infoContent = '<h5>' + marker.title + '</h5>' + 
 					'<a href=' + self.locationArticle() + '>' + 
 					self.locationArticle() + '</a>';
 	};
@@ -192,7 +191,7 @@ var viewModel = function() {
 
 	};
 
-	//This function triggers the marker animation when a list item is clicked
+	//This function triggers the marker animation and opens the infowindow when a list item is clicked
 	self.addListListener = function (marker){
 
 		for (var i=0; i < self.markerArray().length; i++) {
@@ -235,12 +234,7 @@ var viewModel = function() {
 				self.markerArray()[i].setMap(null);
 			}
 		}
-	}, this);     
-
-
-	//WIKIPEDIA ARTICLE SEARCH
-
-
+	}, this);    
 
 				
 };
