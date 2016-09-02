@@ -4,6 +4,7 @@
         <meta charset="utf-8">
         <meta http-equiv="x-ua-compatible" content="ie=edge">
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+        <link href="https://fonts.googleapis.com/css?family=Merriweather" rel="stylesheet">
         <title>Crystal Palace Neighborhood Map</title>
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -18,28 +19,30 @@
     <body>
         <div class="container-fluid wrapper">
             <div id="header">
-                <h1>South London: Places of Historical or Cultural Significance</h1>
-                <h2>Neighborhood Map Project</h2>
+                <h6>Udacity Neighborhood Map Project</h6>
+                <h1>South London: <h1>
+                <h1>Places of Historical or Cultural Significance</h1>
             </div>
         </div>
 
         <div class="container-fluid wrapper">
+
             <div class="row">
-                <div class="col-sm-5">
-                    <div id="map" style="width:350px;height:380px;">
-                    </div>
-                </div>
-     
-                <div class="col-sm-4">
-                    <h3 data-bind="click: $root.addListListener">Local points of interest</h3>
+                <div class="col-sm-3">
+                    <h4 data-bind="click: $root.addListListener">Local points of interest</h5>
                     <ul data-bind="foreach: filteredLocations; foreach: locationList">
-                        <li><button data-bind="text: title, click: $root.addListListener"></button></li>
+                        <li><button type="button" class="btn btn-secondary" data-bind="text: title, click: $root.addListListener"></button></li>
                     </ul>     
                     <div id="search-box">
                         <input data-bind="textInput: currentSearch" placeholder="filter local attractions">
                     </div>  
-
                 </div>
+                <div class="col-sm-5">
+                    <div id="map" style="width:450px;height:500px;">
+                    </div>
+                </div>
+     
+                
             </div>
 
         </div>
@@ -47,7 +50,7 @@
         <script src="js/lib/jquery-1.12.0.min.js"></script>
         <script src="js/lib/knockout-3.4.0.js"></script>
         <script src="js/app.js"></script>
-        <script async src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB5UsEOwDGdMQAvhb7EcJuVs1BNR8FWS7E&callback=createMap" onerror="googleError()">
+        <script async src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB5UsEOwDGdMQAvhb7EcJuVs1BNR8FWS7E&callback=createMap" async defer onerror="googleError()">
         </script>
 
     </body>

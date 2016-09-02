@@ -265,10 +265,8 @@ function createMap() {
 
 //In case google maps cannot be loaded
 function googleError() {
-    if (typeof google === "undefined") {
 
-        $('#map').html('<h1>' + "Oops! Something went wrong. Wait a little bit, then try refreshing." + '</h1>');
+       alert("Oops! Something went wrong. Wait a little bit, then try refreshing.");
         
-    }
 }
 
