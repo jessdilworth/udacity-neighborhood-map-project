@@ -46,6 +46,8 @@ var viewModel = function() {
 
 	};
 
+	//WIKIPEDIA ARTICLE REQUESTS AND STORING
+
 	var myArticles=[];
 
 	console.log(self.locations().length);
@@ -57,13 +59,15 @@ var viewModel = function() {
 
 			$.ajax ({
 				url: 'http://en.wikipedia.org/w/api.php?action=opensearch&search=' + self.locations()[i].title + '&format=json&callback=wikiCallback',
-				dataType: "jsonp",
-				//jsonp: "callback",
-				success: function(response) {
-                	
-                	myArticles.push(response[3]);
+				dataType: "jsonp"
+				//jsonp: "callback"
+			}).done(function(response) {
+              
+            	myArticles.push(response[3]);
 					
-            	}
+        	}).fail(function(){
+
+        		myArticles.push("error");
 				
 			});
 
@@ -112,21 +116,23 @@ var viewModel = function() {
 				}
 			} 
 			if (self.locationArticle().length === 0 && self.currentSearch().length > 3) {
+
 				self.locationArticle().push("Sorry, it looks like there are no articles related to your search.");
+
 			}
-			console.log(self.locationArticle());
+			if (myArticles[0] == "error") {
+
+				self.locationArticle().push("Sorry, something has gone wrong. Try again in a few seconds.");
+			}
+
 		}
 
 		searchWikipedia();
 
-		// return locationArticle;
 		infoContent = '<h5>' + marker.title + '</h5>' + 
 					'<a href=' + self.locationArticle() + '>' + 
 					self.locationArticle() + '</a>';
 	};
-
-
-	console.log(infoContent);
 
 	this.addMarkerListener = function(marker) {
 		var self = this;
