@@ -46,18 +46,101 @@ var viewModel = function() {
 
 	};
 
+	var myArticles=[];
+
+	console.log(self.locations().length);
+
+	//This iterates through the titles of the markers in order to fetch related wikipedia articles and store them in myArticles
+	this.articleReturn= function(){
+
+		for (var i=0; i < self.locations().length; i++) {
+
+			$.ajax ({
+				url: 'http://en.wikipedia.org/w/api.php?action=opensearch&search=' + self.locations()[i].title + '&format=json&callback=wikiCallback',
+				dataType: "jsonp",
+				//jsonp: "callback",
+				success: function(response) {
+                	
+                	myArticles.push(response[3]);
+					
+            	}
+				
+			});
+
+		}
+	
+	};
+
+	this.articleReturn();
+
+	//This will track the user input to the search box
+	this.currentSearch = ko.observable('');
+
+	this.locationArticle = ko.observableArray();
+
+	var infoContent;
+
+	//This function matches the search query with the array of article URLs stored in myArticles
+	this.ajaxRequestSuccess = function(marker) {
+
+		// var locationArticle=[];
+
+		console.log(marker.title);
+
+		function searchWikipedia () {
+
+			var wikiSearchStrg = marker.title.replace(/ /g,"_");
+			
+			if (myArticles) {
+				
+				if(wikiSearchStrg.length > 2) {
+
+					for (var i=0; i < myArticles.length; i++) {
+
+						for (var j=0; j < myArticles[i].length; j++) {
+
+							console.log(myArticles[i]);
+
+							if (myArticles[i][j].toLowerCase().includes(wikiSearchStrg.toLowerCase())) {
+								
+								if (!self.locationArticle().includes(myArticles[i][j])) {
+
+										self.locationArticle().push(myArticles[i][j]);
+								} 
+							} 
+						}
+					}
+				}
+			} 
+			if (self.locationArticle().length === 0 && self.currentSearch().length > 3) {
+				self.locationArticle().push("Sorry, it looks like there are no articles related to your search.");
+			}
+			console.log(self.locationArticle());
+		}
+
+		searchWikipedia();
+
+		// return locationArticle;
+		infoContent = marker.title + self.locationArticle();
+	};
+
+
+	console.log(infoContent);
+
 	this.addMarkerListener = function(marker) {
 		var self = this;
 
 		var f = google.maps.event.addListener(marker, 'click', function() {
 
-				infowindow.setContent(this.title);
+				self.ajaxRequestSuccess(marker);
+
+				infowindow.setContent(infoContent);
 
 				infowindow.open(map, this);
 
-			self.toggleBounce(marker);
+				self.toggleBounce(marker);
 
-			return f;
+				return f;
 		});
 	};
 
@@ -81,9 +164,6 @@ var viewModel = function() {
 
 
 	//LIST FILTERING
-
-	//This will track the user input to the search box
-	this.currentSearch = ko.observable('');
 
 	//Changes the location list based on the search input
 	this.filteredLocations = ko.computed(function(){
@@ -117,9 +197,14 @@ var viewModel = function() {
 
 			if (self.markerArray()[i].title == this.title) {
 
+				// infowindow.setContent(infoContent);
+
+				// infowindow.open(map, marker);
+
 	   			self.markerArray()[i].setAnimation(google.maps.Animation.BOUNCE);
 	   			
 	   			self.listAnimationTimeout(i);
+
 			}
 
 		}
@@ -150,69 +235,6 @@ var viewModel = function() {
 	//WIKIPEDIA ARTICLE SEARCH
 
 
-	var myArticles=[];
-
-	//This iterates through the titles of the markers in order to fetch related wikipedia articles and store them in myArticles
-	this.articleReturn= function(){
-
-		for (var i=0; i < self.markerArray().length; i++) {
-
-			$.ajax ({
-				url: 'http://en.wikipedia.org/w/api.php?action=opensearch&search=' + self.markerArray()[i].title + '&format=json&callback=wikiCallback',
-				dataType: "jsonp",
-				//jsonp: "callback",
-				success: function(response) {
-                	
-                	myArticles.push(response[3]);
-					
-            	}
-				
-			});
-
-		}
-	
-	};
-
-	//This function matches the search query with the array of article URLs stored in myArticles
-	this.ajaxRequestSuccess = ko.computed(function() {
-
-		var locationArticle=[];
-
-		self.articleReturn();
-
-		function searchWikipedia () {
-
-			var wikiSearchStrg = self.currentSearch().replace(/ /g,"_");
-			
-			if (myArticles) {
-
-				if(wikiSearchStrg.length > 2)
-
-					for (var i=0; i < myArticles.length; i++) {
-
-						for (var j=0; j < myArticles[i].length; j++) {
-
-							if (myArticles[i][j].toLowerCase().includes(wikiSearchStrg.toLowerCase())) {
-								
-								if (!locationArticle.includes(myArticles[i][j])) {
-
-										locationArticle.push(myArticles[i][j]);
-								} 
-							} 
-						}
-					}
-			} 
-			if (locationArticle.length === 0 && self.currentSearch().length > 3) {
-				locationArticle.push("Sorry, it looks like there are no articles related to your search.");
-			}
-			console.log(locationArticle);
-		}
-
-		searchWikipedia();
-
-		return locationArticle;
-
-	});
 
 				
 };
